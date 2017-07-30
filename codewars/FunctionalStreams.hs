@@ -28,7 +28,7 @@ repeatS a = a :> repeatS a
 
 -- | Construct a stream by repeatedly applying a function.
 iterateS :: (a -> a) -> a -> Stream a
-iterateS f a = f a :> iterateS f (f a)
+iterateS f a = a :> iterateS f (f a)
 
 -- | Construct a stream by repeating a list forever.
 cycleS :: [a] -> Stream a
