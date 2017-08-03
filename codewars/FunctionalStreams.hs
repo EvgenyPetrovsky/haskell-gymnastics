@@ -96,4 +96,5 @@ fibS = 0 :> 1 :> zipWithS (+) fibS (tailS fibS)
 
 -- | The stream of prime numbers.
 primeS :: Stream Integer
-primeS = error "primeS: not yet implemented"
+primeS = 1 :> primeS' (fromS 2)
+    where primeS' (a :> as) = a :> primeS' (filterS (\x -> x `rem` a /= 0) as)
