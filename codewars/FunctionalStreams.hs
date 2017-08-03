@@ -96,5 +96,5 @@ fibS = 0 :> 1 :> zipWithS (+) fibS (tailS fibS)
 
 -- | The stream of prime numbers.
 primeS :: Stream Integer
-primeS = 1 :> primeS' (fromS 2)
+primeS = primeS' (fromS 2)
     where primeS' (a :> as) = a :> primeS' (filterS (\x -> x `rem` a /= 0) as)
