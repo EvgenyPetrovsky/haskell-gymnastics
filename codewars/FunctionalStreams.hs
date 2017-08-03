@@ -92,7 +92,7 @@ instance Applicative Stream where
 
 -- | The stream of fibonacci numbers.
 fibS :: Stream Integer
-fibS = error "fibS: not yet implemented"
+fibS = 0 :> 1 :> zipWithS (+) fibS (tailS fibS)
 
 -- | The stream of prime numbers.
 primeS :: Stream Integer
