@@ -2,4 +2,4 @@
 module Kata (landPerimeter) where
 
 landPerimeter :: [String] -> String
-landPerimeter arr = error "Implement me!"
+landPerimeter arr = error "Implement me!
