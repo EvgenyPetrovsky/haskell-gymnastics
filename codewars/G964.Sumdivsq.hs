@@ -8,8 +8,7 @@ divisors acc n =
   let 
     (d, r) = n `div` acc
   in
-    if acc * acc > n then [n]
-    else if r /= 0 then divisors (acc + 1) n
+    if if r /= 0 then divisors (acc + 1) n
     else if d < acc then d : acc : divisors (acc + 1) n
-    else d : divisors (acc + 1) n
+    else d : [n]
     
