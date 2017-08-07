@@ -1,4 +1,5 @@
--- https://www.codewars.com/trainer/haskell
+-- http://www.codewars.com/kata/5839c48f0cf94640a20001d3/train/haskell
+
 module Kata (landPerimeter) where
 import Data.List (transpose)
 
