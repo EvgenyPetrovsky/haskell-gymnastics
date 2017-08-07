@@ -4,6 +4,6 @@ module Kata.AreWeAlternate (isAlt) where
 
 isAlt :: String -> Bool
 isAlt word = 
-        and . zipWith (/=) vowels $ tail vowels
+        and . zipWith (/=) vwBools $ tail vwBools
     where 
-        vowels = map (`elem` "aeiouAEIOU") word
+        vwBools = map (`elem` "aeiouAEIOU") word
