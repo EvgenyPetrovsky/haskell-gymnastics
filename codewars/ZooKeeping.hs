@@ -28,29 +28,29 @@ roundZoo zoo_ff prev
 
 reduce :: [String] -> [String]
 reduce (x1:x2:xs)
-  | (x2, x1) `elem` diet = x2 : xs
-  | (x1, x2) `elem` diet = x1 : xs
+  | (x2 ++ " eats " ++ x1) `elem` diet = x2 : xs
+  | (x1 ++ " eats " ++ x2) `elem` diet = x1 : xs
   | otherwise = x1 : (reduce $ x2 : xs)
 reduce x = x
 
-diet :: [(String, String)]
+diet :: [String]
 diet = [
-  ("antelope", "grass"),
-  ("big-fish", "little-fish"),
-  ("bug", "leaves"),
-  ("bear", "big-fish"),
-  ("bear", "bug"),
-  ("bear", "chicken"),
-  ("bear", "cow"),
-  ("bear", "leaves"),
-  ("bear", "sheep"),
-  ("chicken", "bug"),
-  ("cow", "grass"),
-  ("fox", "chicken"),
-  ("fox", "sheep"),
-  ("giraffe", "leaves"),
-  ("lion", "antelope"),
-  ("lion", "cow"),
-  ("panda", "leaves"),
-  ("sheep", "grass") 
+  "antelope eats grass",
+  "big-fish eats little-fish",
+  "bug eats leaves",
+  "bear eats big-fish",
+  "bear eats bug",
+  "bear eats chicken",
+  "bear eats cow",
+  "bear eats leaves",
+  "bear eats sheep",
+  "chicken eats bug",
+  "cow eats grass",
+  "fox eats chicken",
+  "fox eats sheep",
+  "giraffe eats leaves",
+  "lion eats antelope",
+  "lion eats cow",
+  "panda eats leaves",
+  "sheep eats grass"
   ]
