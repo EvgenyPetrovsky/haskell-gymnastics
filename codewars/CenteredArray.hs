@@ -2,10 +2,10 @@
 module Codewars.CenteredArray where
   
 isCentered :: [Int] -> Int -> Bool
-isCentered xs n = elem n $ scanl (+) 0 (foldInMid xs)
+isCentered xs n = elem n $ scanl (+) 0 (foldAtMid xs)
 
-foldInMid :: [Int] -> [Int]
-foldInMid xs = reverse $ zipWith (+) (reverse r) (l++[0])
+foldAtMid :: [Int] -> [Int]
+foldAtMid xs = reverse $ zipWith (+) (reverse r) (l++[0])
   where
     d = length xs `div` 2
     (l,r) = splitAt d xs
