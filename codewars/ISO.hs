@@ -37,7 +37,7 @@ module ISO where
   
   -- isomorphism is reflexive
   refl :: ISO a a
-  refl = (a -> a, a -> a) :: ISO
+  refl = (\a -> id a, \a -> id a)
   
   -- isomorphism is symmetric
   symm :: ISO a b -> ISO b a
@@ -59,7 +59,7 @@ module ISO where
   
   isoMaybe :: ISO a b -> ISO (Maybe a) (Maybe b)
   isoMaybe (ab, ba) = 
-    (\a -> Maybe (ab a), \b -> Maybe (ba b))
+    (\a -> Just (ab a), \b -> Just (ba b))
   
   isoEither :: ISO a b -> ISO c d -> ISO (Either a c) (Either b d)
   isoEither = error "do isoEither"
