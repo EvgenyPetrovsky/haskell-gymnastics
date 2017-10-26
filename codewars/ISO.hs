@@ -45,7 +45,8 @@ module ISO where
   
   -- isomorphism is transitive
   trans :: ISO a b -> ISO b c -> ISO a c
-  trans i1 i2 = (substL i2 . substL i1, substR i2 . substR i1)
+  trans (ab, ba) (bc, cb) = 
+    (\a -> bc . ab, \c -> ba . cb)
   
   -- We can combine isomorphism:
   isoTuple :: ISO a b -> ISO c d -> ISO (a, c) (b, d)
@@ -53,10 +54,12 @@ module ISO where
     (\(a, c) -> (ab a, cd c), \(b, d) -> (ba b, dc d))
   
   isoList :: ISO a b -> ISO [a] [b]
-  isoList (ab, ba) = error "do isoList"
+  isoList (ab, ba) = 
+    (\a -> [ab a], \b -> [ba b])
   
   isoMaybe :: ISO a b -> ISO (Maybe a) (Maybe b)
-  isoMaybe (ab, ba) = error "do isoMaybe"
+  isoMaybe (ab, ba) = 
+    (\a -> Maybe (ab a), \b -> Maybe (ba b))
   
   isoEither :: ISO a b -> ISO c d -> ISO (Either a c) (Either b d)
   isoEither = error "do isoEither"
