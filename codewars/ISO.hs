@@ -57,8 +57,7 @@ isoList :: ISO a b -> ISO [a] [b]
 isoList (ab, ba) = (fmap ab, fmap ba)
 
 isoMaybe :: ISO a b -> ISO (Maybe a) (Maybe b)
-isoMaybe (ab, ba) =
-  (\a -> Just (ab a), \b -> Just (ba b))
+isoMaybe (ab, ba) = (fmap ab, fmap ba)
 
 isoEither :: ISO a b -> ISO c d -> ISO (Either a c) (Either b d)
 isoEither (ab, ba) (cd, dc) =
