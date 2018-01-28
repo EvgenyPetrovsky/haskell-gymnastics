@@ -25,7 +25,7 @@ generateEvents = error "No implementation"
 -- processes all roulete events and applies game strategy stops game if runs out of balance 
 processEvents :: Balance -> [Outcome] -> Stake -> Balance
 
-processEvents balance [] _ = balance
+processEvents balance [] stake = balance + stake
 processEvents balance (result:results) stake
   | balance <= 0  = balance
   | result == win = processEvents (balance + stake) results smallestStake
