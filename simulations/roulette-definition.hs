@@ -69,7 +69,9 @@ data BetPlacement =
 type Bet = (Nominal, BetPlacement)
     
 isValid :: BetPlacement -> Bool
-isValid bet = False
+isValid bet = 
+    -- Check placement. m represents leftmost topmost position
+    True
 
 toPockets :: BetPlacement -> [Pocket]
 toPockets (Straight n)     = [n]
@@ -100,7 +102,11 @@ initBets = []
 
 addBet :: Bet -> [Bet] -> [Bet]
 -- add (if valid) into stack of other bets
-addBet bet bets = error "not implemented"
+addBet bet bets = 
+    if isValid placement && nominal >= 0
+        then bet : bets
+        else bets
+    where (nominal, placement) = bet
 
 gamePayout :: Pocket -> [Bet] -> Nominal
 gamePayout p bs = sum $ map (\b -> betPayout p b) bs
