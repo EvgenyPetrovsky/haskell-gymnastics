@@ -99,6 +99,7 @@ initBets :: [Bet]
 initBets = []
 
 addBet :: Bet -> [Bet] -> [Bet]
+-- add (if valid) into stack of other bets
 addBet bet bets = error "not implemented"
 
 gamePayout :: Pocket -> [Bet] -> Nominal
