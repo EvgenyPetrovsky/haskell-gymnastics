@@ -98,9 +98,8 @@ includesPocket :: [Pocket] -> Pocket -> Bool
 includesPocket ns n = elem n ns
 
 {-- Game definitions --}
-generatePockets :: WheelStyle -> R.StdGen -> [Pocket]
-
-generatePockets ws gen = 
+winningNumbers :: WheelStyle -> R.StdGen -> [Pocket]
+winningNumbers ws gen = 
     map getPocketByIdx $ R.randomRs (1, pctCount) gen
     where
         pctCount = length $ pocketSeq ws
