@@ -1,3 +1,5 @@
+import qualified System.Random as R
+
 {-- House Rules --}
 type Nominal = Int
 minBet = 10   :: Nominal
@@ -11,15 +13,17 @@ data WheelStyle = SingleZero | DoubleZero
 type Pocket = Int
 type WheelNumberSequence = [Pocket]
 
-pocketSeq    :: WheelStyle -> WheelNumberSequence
-pocketColor  :: Pocket -> Color
-randomPocket :: WheelStyle -> Pocket
+pocketSeq     :: WheelStyle -> WheelNumberSequence
+pocketColor   :: Pocket -> Color
+pocketByIdx   :: WheelStyle -> Int -> Pocket
 
 pocketSeq SingleZero =
     [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26]
 -- 00 represented as -1
 pocketSeq DoubleZero = 
     [0,28,9,26,30,11,7,20,32,17,5,22,34,15,3,24,36,13,1,-1,27,10,25,29,12,8,19,31,18,6,21,33,16,4,23,35,14,2]
+
+pocketByIdx ws idx = pocketSeq ws !! idx
 
 pocketColor n
     | elem n $ [ 1..10] ++ [19..28] = ebor
@@ -29,9 +33,6 @@ pocketColor n
     where
         ebor = if (even n) then Black else Red
         erob = if (even n) then Red else Black
-
-randomPocket SingleZero = error "not implemented"
-randomPocket DoubleZero = error "not implemented"
 
 {-- table definitions --}
 type TableLayout = WheelStyle
@@ -97,6 +98,20 @@ includesPocket :: [Pocket] -> Pocket -> Bool
 includesPocket ns n = elem n ns
 
 {-- Game definitions --}
+generatePockets :: WheelStyle -> R.StdGen -> [Pocket]
+
+generatePockets ws gen = 
+    map getPocketByIdx $ R.randomRs (1, pctCount) gen
+    where
+        pctCount = length $ pocketSeq ws
+        getPocketByIdx = \x -> pocketByIdx ws (x - 1)
+
+makeGenerator :: Int -> R.StdGen
+makeGenerator = R.mkStdGen
+
+newGenerator  :: IO R.StdGen
+newGenerator = R.newStdGen
+        
 initBets :: [Bet] 
 initBets = []
 
