@@ -1,3 +1,16 @@
+module Roulete.Definition (
+  House,
+  Color,
+  WheelStyle,
+  BetPlacement,
+  makeGenerator,
+  newGenerator,
+  winningNumbers,
+  initBets,
+  addBet,
+  gamePayout
+) where 
+
 import qualified System.Random as R
 
 {-- House Rules --}
