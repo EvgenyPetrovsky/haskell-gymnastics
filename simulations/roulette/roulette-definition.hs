@@ -2,8 +2,18 @@ import qualified System.Random as R
 
 {-- House Rules --}
 type Nominal = Int
-minBet = 10   :: Nominal
-maxBet = 2000 :: Nominal
+data House = House {
+    minBet :: Nominal,
+    maxBet :: Nominal,
+    wheelStyle :: WheelStyle
+} deriving (Show)
+
+defaultHouse :: House
+defaultHouse = House {
+    minBet = 10,
+    maxBet = 2000,
+    wheelStyle = SingleZero        
+}
 
 {-- Roulette definitions --}
 data Color = Red | Black | Green
