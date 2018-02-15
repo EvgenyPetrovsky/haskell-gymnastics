@@ -165,3 +165,17 @@ betPayout pocket (nominal, placement)
     where 
         pockets = (toPockets placement)
         qty = length pockets
+
+{-- Player --}
+data PlayedGame = PlayedGame {
+    bets          :: [Bet],
+    winningNumber :: Pocket,
+    payout        :: Nominal
+}
+data Player = Player {
+    balance       :: Nominal,
+    gamesHistory  :: [PlayedGame]
+}
+
+initPlayer :: Balance -> Player
+initPlayer x = Player {balance = x, gamesHistory = []}
