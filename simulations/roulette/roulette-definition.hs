@@ -80,9 +80,14 @@ data BetPlacement =
 type Bet = (Nominal, BetPlacement)
     
 isValid :: BetPlacement -> Bool
-isValid bet = 
-    -- Check placement. m represents leftmost topmost position
-    True
+isValid (SplitH n) = (n > 0) && (rem n 3 /= 0)
+isValid (SplitV n) = (n > 0) && (n < 34)
+isValid (Street n) = rem n 3 == 1
+isValid (Corner n) = isValid (SplitH n) && isValid (SplitV n)
+isValid (SixLine n) = isValid (SplitV n) && isValid (Street n)
+isValid (DoubleStreet n) = isValid (SixLine n)
+isValid (Trio x y z) = (x /= y) && (y /= z) && (x /= z)
+isValid _ = True
 
 toPockets :: BetPlacement -> [Pocket]
 toPockets (Straight n)     = [n]
