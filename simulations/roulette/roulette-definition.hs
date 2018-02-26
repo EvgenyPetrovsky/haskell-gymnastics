@@ -158,6 +158,9 @@ addBet bet bets =
 gamePayout :: Pocket -> [Bet] -> Nominal
 gamePayout p bs = sum $ map (\b -> betPayout p b) bs
 
+betsCost :: [Bet] -> Nominal
+betsCost bs = sum . map fst $ bs
+
 betPayout :: Pocket -> Bet -> Nominal
 betPayout pocket (nominal, placement)
     | pockets `includesPocket` pocket = (nominal * 36) `div` qty - nominal
@@ -174,8 +177,15 @@ data PlayedGame = PlayedGame {
 }
 data Player = Player {
     balance       :: Nominal,
-    gamesHistory  :: [PlayedGame]
+    experience    :: [PlayedGame],
+    luck          :: R.StdGen
+    table         :: TableLayout
 }
 
-initPlayer :: Balance -> Player
-initPlayer x = Player {balance = x, gamesHistory = []}
+initPlayer :: Balance -> R.StdGen -> Player
+initPlayer b l = 
+    Player {balance = b, experience = [], luck = l}
+
+extendExperience :: PlayedGame -> Player -> Player
+extendExperience g (p {b, e, l}) = 
+    Playr {balance = b, experience = g:e, luck = l}
