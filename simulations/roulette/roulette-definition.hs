@@ -179,7 +179,8 @@ data Player = Player {
     balance       :: Nominal,
     experience    :: [PlayedGame],
     luck          :: R.StdGen
-    table         :: TableLayout
+    table         :: TableLayout,
+    place         :: House
 }
 
 initPlayer :: Balance -> R.StdGen -> Player
@@ -187,5 +188,5 @@ initPlayer b l =
     Player {balance = b, experience = [], luck = l}
 
 extendExperience :: PlayedGame -> Player -> Player
-extendExperience g (p {b, e, l}) = 
-    Playr {balance = b, experience = g:e, luck = l}
+extendExperience g (p {b, e, l, t, p}) = 
+    Player {balance = b, experience = g:e, luck = l, table = t, place = p}
