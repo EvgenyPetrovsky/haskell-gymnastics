@@ -1,58 +1,68 @@
-import System.Random
-import Control.Monad
+{-- 
+  This file implements doubling stakes strategy.
 
-{--
-This program implements algorithm of doubling stakes on roulete.
-Rules: stake is made for red or green. If loss then double stake. If win then reset stake to minimum one
+  Idea is to make minimum bet for the color
+  Make a bet (reduce balance)
+  If color does not win then double stake
+  If color wins then add won money to balance and reset stake to minimum
+
+  repeat until 
+  * either balance becomes less than we can use for bet
+  * or all games are over
 --}
 
--- types
-type Outcome = Bool
-type Money   = Float
-type Balance = Money
-type Stake   = Money
-type RNum    = Int
-data RColor  = RRed, R
-type Number  = (RNum, RColor)
+import qualified Roulette.Definitions as RD
 
--- parameters
-smallestStake = 1   :: Stake
-startBalance  = 100 :: Balance
-timesToPlay   = 30  :: Int
 
-main = do
-  outcomes <- generateEvents
-  balance  <- playGame
+gamesCount = 100
 
--- play Game
-playGame :: [Outcome] -> Balance
-playGame outcomes = processEvents startBalance outcomes smallestStake
-
--- generates series of random roulete launch outcomes. Assuming that game is fair and outcome doesn't depend on anything
-generateEvents :: IO [Outcome]
-generateEvents = error "No implementation"
 {--
-generateEvents = [l, l, l, w, l, l, l, w, l, l, l, l, l]
-  where 
-    l = False
-    w = True
+  Generate players for game.
+  Input is required number of players to be generated; output is list of Players
 --}
+generatePlayers :: Int -> [Player]
+generatePlayers n b = 
+  map (createPlayer balance) [1..n]
+  where
+    balance = b
+    createPlayer bal luckyNum = 
+      initPlayer bal (makeGenerator luckyNum)
 
--- processes all roulete events and applies game strategy stops game if runs out of balance 
-processEvents :: Balance -> [Outcome] -> Stake -> Balance
 
-processEvents balance [] stake = 
-  balance + stake
-processEvents balance (result:results) stake
-  | balance <= 0  = balance
-  | result == win = processEvents (balance + wonMoney) results smallestStake
-  | otherwise     = processEvents (balance - newStake) results newStake
+{--
+  Run simulation requires player, house and roulette, 
+  luck of player (R.StdGen) defines 
+--}
+runManySimulations :: Int -> [Player]
+runManySimulations n =
+  map (\p -> runSimulation p house) $ generatePlayers n
+  where
+    house = RD.defaultHouse
+
+{--
+  Complete lifecycle of player in casino
+  Fold. Zero element (house, player), over winning numbers, returns Player
+--}
+runSimulation :: Player -> House -> Player
+runSimulation p h =
+  fold? pockets p
   where 
-    win      = True
-    newStake = stake * 2
-    wonMoney = stake * 2 * 0.98
+    luck = luck p
+    style = wheelStype h
+    pockets = take gamesCount (winningNumbers style luck)
 
+{--
+  implementation of one game round, always use one placement - Red
+  if no experience - make minimun bet
+  if some experience and last game was won - make 
+--} 
+strategyRed :: House -> Player -> Pocket -> Player
+iter pcts h p = 
+  if experience p == [] then
 
+  else 
 
+-- check balance; play round; extend experience
+playTheGame
 
-
+data Player = 
