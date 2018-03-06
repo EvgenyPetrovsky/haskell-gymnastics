@@ -131,17 +131,20 @@ includesPocket :: [Pocket] -> Pocket -> Bool
 includesPocket ns n = elem n ns
 
 {-- Game definitions --}
-winningNumbers :: WheelStyle -> R.StdGen -> [Pocket]
+
+type Luck = R.StdGen
+
+winningNumbers :: WheelStyle -> Luck -> [Pocket]
 winningNumbers ws gen = 
     map getPocketByIdx $ R.randomRs (1, pctCount) gen
     where
         pctCount = length $ pocketSeq ws
         getPocketByIdx = \x -> pocketByIdx ws (x - 1)
 
-makeGenerator :: Int -> R.StdGen
+makeGenerator :: Int -> Luck
 makeGenerator = R.mkStdGen
 
-newGenerator  :: IO R.StdGen
+newGenerator  :: IO Luck
 newGenerator = R.newStdGen
         
 initBets :: [Bet] 
@@ -175,15 +178,16 @@ data PlayedGame = PlayedGame {
     winningNumber :: Pocket,
     payout        :: Nominal
 }
+
 data Player = Player {
     balance       :: Nominal,
     experience    :: [PlayedGame],
-    luck          :: R.StdGen
+    luck          :: Luck
     table         :: TableLayout,
     place         :: House
 }
 
-initPlayer :: Balance -> R.StdGen -> Player
+initPlayer :: Balance -> Luck -> Player
 initPlayer b l = 
     Player {balance = b, experience = [], luck = l}
 
