@@ -158,11 +158,21 @@ addBet bet bets =
         else bets
     where (nominal, placement) = bet
 
+payBetCost :: [Bet] -> Player -> Player
+payBetCost bs p = 
+    Player {
+        balance = balabce p - betsCost bs
+        experience = experience p
+        luck = luck p
+        table = table p
+        place = place p
+    }
+    where 
+        betsCost :: [Bet] -> Nominal
+        betsCost bs = sum . map fst $ bs
+
 gamePayout :: Pocket -> [Bet] -> Nominal
 gamePayout p bs = sum $ map (\b -> betPayout p b) bs
-
-betsCost :: [Bet] -> Nominal
-betsCost bs = sum . map fst $ bs
 
 betPayout :: Pocket -> Bet -> Nominal
 betPayout pocket (nominal, placement)
