@@ -1,5 +1,5 @@
 module Roulete.Definition (
-  House,
+  Game,
   Color,
   WheelStyle,
   BetPlacement,
@@ -13,16 +13,16 @@ module Roulete.Definition (
 
 import qualified System.Random as R
 
-{-- House Rules --}
+{-- Game Rules --}
 type Nominal = Int
-data House = House {
+data Game = Game {
     minBet :: Nominal,
     maxBet :: Nominal,
     wheelStyle :: WheelStyle
 } deriving (Show)
 
-defaultHouse :: House
-defaultHouse = House {
+defaultGame :: Game
+defaultGame = Game {
     minBet = 10,
     maxBet = 2000,
     wheelStyle = SingleZero        
@@ -167,9 +167,9 @@ payBetCost bs p =
         table = table p
         place = place p
     }
-    where 
-        betsCost :: [Bet] -> Nominal
-        betsCost bs = sum . map fst $ bs
+
+betsCost :: [Bet] -> Nominal
+betsCost bs = sum . map fst $ bs
 
 gamePayout :: Pocket -> [Bet] -> Nominal
 gamePayout p bs = sum $ map (\b -> betPayout p b) bs
@@ -194,7 +194,7 @@ data Player = Player {
     experience    :: [PlayedGame],
     luck          :: Luck
     table         :: TableLayout,
-    place         :: House
+    game          :: Game
 }
 
 initPlayer :: Balance -> Luck -> Player
