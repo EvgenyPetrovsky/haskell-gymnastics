@@ -193,7 +193,6 @@ data Player = Player {
     balance       :: Nominal,
     experience    :: [PlayedGame],
     luck          :: Luck
-    table         :: TableLayout,
     game          :: Game
 }
 
