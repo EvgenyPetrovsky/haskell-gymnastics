@@ -23,14 +23,16 @@ type Balance = Nominal
 data Game = Game {
     minBet :: Nominal,
     maxBet :: Nominal,
-    wheelStyle :: WheelStyle
+    wheelStyle :: WheelStyle,
+    maxGames :: Int
 } deriving (Show)
 
 defaultGame :: Game
 defaultGame = Game {
     minBet = 10,
     maxBet = 2000,
-    wheelStyle = SingleZero        
+    wheelStyle = SingleZero,
+    maxGames = 100     
 }
 
 {-- Roulette definitions --}
