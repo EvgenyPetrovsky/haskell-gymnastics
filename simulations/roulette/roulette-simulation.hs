@@ -1,3 +1,9 @@
+module Roulete.Simulation (
+    Strategy,
+    runSimulations,
+    generatePlayers
+) where 
+
 {-- 
   This file implements generic simulation framework
 
@@ -14,34 +20,29 @@
 
 --}
 
-import qualified Roulette.Definitions as RD
+import Roulette.Definitions
 
 type Strategy = Player -> [Bets]
-
-gamesCount = 100
 
 {--
   Generate players for game.
   Input is required number of players to be generated; output is list of Players
 --}
-generatePlayers :: Int -> [Player]
+generatePlayers :: Int -> Balance -> [Player]
 generatePlayers n b = 
   map (createPlayer balance) [1..n]
   where
     balance = b
     createPlayer bal luckyNum = 
-      initPlayer bal (makeGenerator luckyNum)
-
+      newPlayer bal (makeGenerator luckyNum)
 
 {--
   Run simulation requires player, house and roulette, 
   luck of player (R.StdGen) defines 
 --}
-runManySimulations :: Strategy -> Int -> [Player]
-runManySimulations n =
-  map (\p -> runSimulation p) $ generatePlayers n
-  where
-    house = RD.defaultHouse
+runSimulations :: Strategy -> [Player] -> [Player]
+runSimulations s ps =
+    map (runSimulation s) $ ps
 
 {--
   Complete lifecycle of player in casino
@@ -49,11 +50,11 @@ runManySimulations n =
 --}
 runSimulation :: Strategy -> Player -> Player
 runSimulation s p =
-  fold? (s) pockets p
-  where 
-    luck = luck p
-    style = wheelStype . game $ p
-    pockets = take gamesCount (winningNumbers style luck)
+    foldl (playOneRound p s) p pockets
+    where 
+        luck = luck p
+        style = wheelStype . game $ p
+        pockets = take gamesCount (winningNumbers style luck)
 
 {--
   main builing block of simulation. Simulation consists of series of rounds
@@ -62,25 +63,25 @@ runSimulation s p =
   - make payout based on winning number
   as a result of round we have "more experienced" Player with updated balance
 --}
-playOneRound :: Player -> Pocket -> Player
-playOneRound p w = 
-  let
-    begBal = balance p
-    betAmt = betsCost bets
-    endBal = begBal - betAmt + payout
-    bets   = s p
-    payout = gamePayout w bets
-  in 
-    Player {
-      balance = endBal
-      experience = (bets, w, payout) : (experience p)
-      luck = luck p
-      game = game p
-    }
+playOneRound :: Player -> Strategy -> Pocket -> Player
+playOneRound p s w = 
+    let
+        begBal = balance p
+        betAmt = betsCost bets
+        endBal = begBal - betAmt + payout
+        bets   = s p
+        payout = gamePayout w bets
+    in 
+        Player {
+            balance    = endBal,
+            experience = (bets, w, payout) : (experience p),
+            luck       = luck p,
+            game       = game p
+        }
     
 {--
   example of strategy
 --} 
 strategyRed :: Player -> [Bets]
-strategyRed p g =
-  addBet (RedBet, minBet) initBets
+strategyRed p =
+    addBet (RedBet, minBet . game $ p) initBets
