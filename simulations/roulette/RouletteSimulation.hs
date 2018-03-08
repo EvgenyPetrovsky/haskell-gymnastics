@@ -28,13 +28,12 @@ type Strategy = Player -> [Bet]
   Generate players for game.
   Input is required number of players to be generated; output is list of Players
 --}
-generatePlayers :: Int -> Balance -> [Player]
-generatePlayers n b = 
-  map (createPlayer balance) [1..n]
+generatePlayers :: Int -> Balance -> Game -> [Player]
+generatePlayers num bal game = 
+  map (createPlayer) [1..num]
   where
-    balance = b
-    createPlayer bal luckyNum = 
-      newPlayer bal (makeGenerator luckyNum)
+    createPlayer luckyNum = 
+      newPlayer bal (makeGenerator luckyNum) game
 
 {--
   Run simulation requires player, house and roulette, 
@@ -50,11 +49,12 @@ runSimulations s ps =
 --}
 runSimulation :: Strategy -> Player -> Player
 runSimulation s p =
-    foldl (playOneRound p s) p pockets
+    foldl fun p pockets
     where 
-        luck = luck p
+        luck' = luck p
         style = wheelStyle . game $ p
-        pockets = take maxGames (winningNumbers style luck)
+        pockets = take (maxGames . game $ p) (winningNumbers style luck')
+        fun player pocket = playOneRound player s pocket
 
 {--
   main builing block of simulation. Simulation consists of series of rounds
@@ -71,10 +71,15 @@ playOneRound p s w =
         endBal = begBal - betAmt + payout
         bets   = s p
         payout = gamePayout w bets
+        latest = PlayedGame {
+            bets = bets, 
+            winningNumber = w, 
+            payout = payout
+        }
     in 
         Player {
             balance    = endBal,
-            experience = (bets, w, payout) : (experience p),
+            experience = latest : (experience p),
             luck       = luck p,
             game       = game p
         }
@@ -84,4 +89,4 @@ playOneRound p s w =
 --} 
 strategyRed :: Player -> [Bet]
 strategyRed p =
-    addBet (RedBet, minBet . game $ p) initBets
+    addBet (minBet . game $ p, RedBet) initBets

@@ -1,12 +1,13 @@
 module RouletteDefinition (
-    Game, minBet, maxBet, wheelStyle, maxGames,
+    Game(..),
     Nominal,
     Balance,
-    WheelStyle,
+    WheelStyle(..),
     Bet,
     BetPlacement(..),
     Pocket,
     Player(..),
+    PlayedGame(..),
     makeGenerator, newGenerator, winningNumbers,
     initBets, addBet, betsCost, gamePayout,
     newPlayer
