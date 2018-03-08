@@ -1,16 +1,14 @@
-module Roulete.Definition (
-    Game,
-    Color,
+module RouletteDefinition (
+    Game, minBet, maxBet, wheelStyle, maxGames,
+    Nominal,
     Balance,
     WheelStyle,
-    BetPlacement,
-    Player,
-    makeGenerator,
-    newGenerator,
-    winningNumbers,
-    initBets,
-    addBet,
-    gamePayout,
+    Bet,
+    BetPlacement(..),
+    Pocket,
+    Player(..),
+    makeGenerator, newGenerator, winningNumbers,
+    initBets, addBet, betsCost, gamePayout,
     newPlayer
 ) where 
 
@@ -184,14 +182,14 @@ data PlayedGame = PlayedGame {
     bets          :: [Bet],
     winningNumber :: Pocket,
     payout        :: Nominal
-}
+} deriving (Show)
 
 data Player = Player {
     balance       :: Nominal,
     experience    :: [PlayedGame],
     luck          :: Luck,
     game          :: Game
-}
+} deriving (Show)
 
 newPlayer :: Balance -> Luck -> Game -> Player
 newPlayer b l g = 

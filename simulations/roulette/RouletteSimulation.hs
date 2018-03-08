@@ -1,4 +1,4 @@
-module Roulete.Simulation (
+module RouleteSimulation (
     Strategy,
     runSimulations,
     generatePlayers
@@ -20,9 +20,9 @@ module Roulete.Simulation (
 
 --}
 
-import Roulette.Definitions
+import RouletteDefinition
 
-type Strategy = Player -> [Bets]
+type Strategy = Player -> [Bet]
 
 {--
   Generate players for game.
@@ -53,8 +53,8 @@ runSimulation s p =
     foldl (playOneRound p s) p pockets
     where 
         luck = luck p
-        style = wheelStype . game $ p
-        pockets = take gamesCount (winningNumbers style luck)
+        style = wheelStyle . game $ p
+        pockets = take maxGames (winningNumbers style luck)
 
 {--
   main builing block of simulation. Simulation consists of series of rounds
@@ -82,6 +82,6 @@ playOneRound p s w =
 {--
   example of strategy
 --} 
-strategyRed :: Player -> [Bets]
+strategyRed :: Player -> [Bet]
 strategyRed p =
     addBet (RedBet, minBet . game $ p) initBets
