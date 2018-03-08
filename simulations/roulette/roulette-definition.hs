@@ -1,20 +1,25 @@
 module Roulete.Definition (
-  Game,
-  Color,
-  WheelStyle,
-  BetPlacement,
-  makeGenerator,
-  newGenerator,
-  winningNumbers,
-  initBets,
-  addBet,
-  gamePayout
+    Game,
+    Color,
+    Balance,
+    WheelStyle,
+    BetPlacement,
+    Player,
+    makeGenerator,
+    newGenerator,
+    winningNumbers,
+    initBets,
+    addBet,
+    gamePayout,
+    newPlayer
 ) where 
 
 import qualified System.Random as R
 
 {-- Game Rules --}
 type Nominal = Int
+type Balance = Nominal
+
 data Game = Game {
     minBet :: Nominal,
     maxBet :: Nominal,
@@ -158,16 +163,6 @@ addBet bet bets =
         else bets
     where (nominal, placement) = bet
 
-payBetCost :: [Bet] -> Player -> Player
-payBetCost bs p = 
-    Player {
-        balance = balabce p - betsCost bs
-        experience = experience p
-        luck = luck p
-        table = table p
-        place = place p
-    }
-
 betsCost :: [Bet] -> Nominal
 betsCost bs = sum . map fst $ bs
 
@@ -192,14 +187,15 @@ data PlayedGame = PlayedGame {
 data Player = Player {
     balance       :: Nominal,
     experience    :: [PlayedGame],
-    luck          :: Luck
+    luck          :: Luck,
     game          :: Game
 }
 
-initPlayer :: Balance -> Luck -> Player
-initPlayer b l = 
-    Player {balance = b, experience = [], luck = l}
-
-extendExperience :: PlayedGame -> Player -> Player
-extendExperience g (p {b, e, l, t, p}) = 
-    Player {balance = b, experience = g:e, luck = l, table = t, place = p}
+newPlayer :: Balance -> Luck -> Game -> Player
+newPlayer b l g = 
+    Player {
+        balance = b, 
+        experience = [], 
+        luck = l, 
+        game = g
+    }
