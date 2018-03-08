@@ -19,16 +19,19 @@ import qualified Roulette.Simulations as RS
   if no experience - make minimun bet
   if some experience and last game was won - make 
 --} 
-strategyRed :: Player -> Game -> Player
-strategyRed p g = 
-  if noExperience p then 
+strategyRed :: Player -> [Bets]
+strategyRed p = 
+  if balance < minBet then
+    initBets
+  else if null (experience p) then 
     addBet (RedBet, minBet) initBets
   else if lastPayout == 0 && dblBet <= maxBet
     addBet (RedBet, dblBet) initBets
   else 
     addBet (RedBet, minBet) initBets
   where 
-    noExperience p = experience p == []
+    g = game p
+    noExperience p = 
     minBet = minBet g
     maxBet = maxBet g
     lastBet = head . experience $ p
