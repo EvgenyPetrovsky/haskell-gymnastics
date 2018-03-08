@@ -16,6 +16,7 @@
 
 import qualified Roulette.Definitions as RD
 
+type Strategy = Player -> [Bets]
 
 gamesCount = 100
 
@@ -36,9 +37,9 @@ generatePlayers n b =
   Run simulation requires player, house and roulette, 
   luck of player (R.StdGen) defines 
 --}
-runManySimulations :: Int -> [Player]
+runManySimulations :: Strategy -> Int -> [Player]
 runManySimulations n =
-  map (\p -> runSimulation p house) $ generatePlayers n
+  map (\p -> runSimulation p) $ generatePlayers n
   where
     house = RD.defaultHouse
 
@@ -46,20 +47,40 @@ runManySimulations n =
   Complete lifecycle of player in casino
   Fold. Zero element (house, player), over winning numbers, returns Player
 --}
-runSimulation :: Player -> Game -> Player
-runSimulation p h =
-  fold? pockets p
+runSimulation :: Strategy -> Player -> Player
+runSimulation s p =
+  fold? (s) pockets p
   where 
     luck = luck p
-    style = wheelStype h
+    style = wheelStype . game $ p
     pockets = take gamesCount (winningNumbers style luck)
 
--- apply strategy-> Bet, make bet >> calculate payout >> repeat
-
-
+{--
+  main builing block of simulation. Simulation consists of series of rounds
+  for round we need 
+  - player to make bets 
+  - make payout based on winning number
+  as a result of round we have "more experienced" Player with updated balance
+--}
+playOneRound :: Player -> Pocket -> Player
+playOneRound p w = 
+  let
+    begBal = balance p
+    betAmt = betsCost bets
+    endBal = begBal - betAmt + payout
+    bets   = s p
+    payout = gamePayout w bets
+  in 
+    Player {
+      balance = endBal
+      experience = (bets, w, payout) : (experience p)
+      luck = luck p
+      game = game p
+    }
+    
 {--
   example of strategy
 --} 
-strategyRed :: Player -> Game -> Player
+strategyRed :: Player -> [Bets]
 strategyRed p g =
   addBet (RedBet, minBet) initBets
