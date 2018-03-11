@@ -11,30 +11,22 @@
   * or all games are over
 --}
 
-import qualified Roulette.Definitions as RD
-import qualified Roulette.Simulations as RS
+import RouletteDefinition 
 
 {--
   implementation of one game round, always use one placement - Red
   if no experience - make minimun bet
   if some experience and last game was won - make 
 --} 
-strategyRed :: Player -> [Bets]
-strategyRed p = 
-  if balance < minBet then
-    initBets
-  else if null (experience p) then 
-    addBet (RedBet, minBet) initBets
-  else if lastPayout == 0 && dblBet <= maxBet
-    addBet (RedBet, dblBet) initBets
-  else 
-    addBet (RedBet, minBet) initBets
+strategyRed :: Player -> [Bet]
+strategyRed p 
+  | balance p < minbet = initBets
+  | null (experience p) = addBet (minbet, RedBet) initBets
+  | lstpayout == 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
+  | otherwise = addBet (minbet, RedBet) initBets
   where 
-    g = game p
-    noExperience p = 
-    minBet = minBet g
-    maxBet = maxBet g
-    lastBet = head . experience $ p
-    lastPayout = payout lastBet
-    lastBetCost = betsCost lastBet
-    dblBet = lastBetCost * 2
+    minbet = minBet . game $ p
+    maxbet = maxBet . game $ p
+    lstgame = head . experience $ p
+    lstpayout = payout lstgame
+    dblbet = 2 * (betsCost . bets $ lstgame)
