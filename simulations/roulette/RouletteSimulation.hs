@@ -66,10 +66,9 @@ runSimulation s p =
 playOneRound :: Player -> Strategy -> Pocket -> Player
 playOneRound p s w = 
     let
-        begBal = balance p
-        betAmt = betsCost bets
-        endBal = begBal - betAmt + payout
-        bets   = s p
+        bal = balance p
+        sbt = s p
+        bets = if (betsCost sbt) > bal then [] else sbt
         payout = gamePayout w bets
         latest = PlayedGame {
             bets = bets, 
@@ -78,7 +77,7 @@ playOneRound p s w =
         }
     in 
         Player {
-            balance    = endBal,
+            balance    = bal + payout,
             experience = latest : (experience p),
             luck       = luck p,
             game       = game p
@@ -94,7 +93,7 @@ strategyExample :: Strategy
 strategyExample p
     | balance p < minbet = initBets
     | null (experience p) = addBet (minbet, RedBet) initBets
-    | lstpayout == 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
+    | lstpayout < 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
     | otherwise = addBet (minbet, RedBet) initBets
     where
         minbet = minBet . game $ p
