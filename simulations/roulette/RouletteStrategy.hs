@@ -22,7 +22,7 @@ doubleOnRedUntilWin :: Strategy
 doubleOnRedUntilWin p 
   | balance p < minbet = initBets
   | null (experience p) = addBet (minbet, RedBet) initBets
-  | lstpayout == 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
+  | lstpayout < 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
   | otherwise = addBet (minbet, RedBet) initBets
   where 
     minbet = minBet . game $ p
