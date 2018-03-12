@@ -173,7 +173,7 @@ gamePayout p bs = sum $ map (\b -> betPayout p b) bs
 betPayout :: Pocket -> Bet -> Nominal
 betPayout pocket (nominal, placement)
     | pockets `includesPocket` pocket = (nominal * 36) `div` qty - nominal
-    | otherwise = 0
+    | otherwise = 0 - nominal
     where 
         pockets = (toPockets placement)
         qty = length pockets
