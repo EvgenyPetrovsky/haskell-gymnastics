@@ -1,25 +1,25 @@
+module RouletteStrategy (
+  doubleOnRedUntilWin
+) where 
+
 {-- 
-  This file implements doubling stakes strategy.
+  This file implements Strategies.
 
-  Idea is to make minimum bet for the color
-  Make a bet (reduce balance)
-  If color does not win then double stake
-  If color wins then add won money to balance and reset stake to minimum
-
-  repeat until 
-  * either balance becomes less than we can use for bet
-  * or all games are over
+  Strategies are implemented as functions of **Strategy** type. 
+  All working strategies should be registered in list of module functions. 
+  Name of function should start with verb and contain short and sensible description.
 --}
 
 import RouletteDefinition 
+import RouletteSimulation (Strategy)
 
 {--
   implementation of one game round, always use one placement - Red
   if no experience - make minimun bet
   if some experience and last game was won - make 
 --} 
-strategyRed :: Player -> [Bet]
-strategyRed p 
+doubleOnRedUntilWin :: Strategy
+doubleOnRedUntilWin p 
   | balance p < minbet = initBets
   | null (experience p) = addBet (minbet, RedBet) initBets
   | lstpayout == 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
