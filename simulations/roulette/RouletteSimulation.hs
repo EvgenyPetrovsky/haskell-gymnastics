@@ -1,4 +1,4 @@
-module RouleteSimulation (
+module RouletteSimulation (
     Strategy,
     runSimulations,
     generatePlayers
@@ -85,8 +85,33 @@ playOneRound p s w =
         }
     
 {--
-  example of strategy
+  example of strategy implementation. 
+  type Strategy = Player -> [Bet]
+  implements doubleOnRedUntilWin
 --} 
-strategyRed :: Player -> [Bet]
-strategyRed p =
-    addBet (minBet . game $ p, RedBet) initBets
+
+strategyExample :: Strategy
+strategyExample p
+    | balance p < minbet = initBets
+    | null (experience p) = addBet (minbet, RedBet) initBets
+    | lstpayout == 0 && dblbet <= maxbet = addBet (dblbet, RedBet) initBets
+    | otherwise = addBet (minbet, RedBet) initBets
+    where
+        minbet = minBet . game $ p
+        maxbet = maxBet . game $ p
+        lstgame = head . experience $ p
+        lstpayout = payout lstgame
+        dblbet = 2 * (betsCost . bets $ lstgame)
+
+
+{--
+    Example of running simulation
+--}
+simulationExample :: [Player]
+simulationExample =
+    let b  = 5000
+        c  = 100
+        g  = Game { minBet = 10, maxBet = 2000, wheelStyle = SingleZero, maxGames = c }
+        ps = generatePlayers 100 b g
+    in
+        runSimulations strategyExample ps
