@@ -1,7 +1,8 @@
 module RouletteSimulation (
     Strategy,
     runSimulations,
-    generatePlayers
+    generatePlayers,
+    generateNPlayers
 ) where 
 
 {-- 
@@ -26,11 +27,19 @@ type Strategy = Player -> [Bet]
 
 {--
   Generate players for game.
-  Input is required number of players to be generated; output is list of Players
+  Input is lucks, balance and game
 --}
-generatePlayers :: Int -> Balance -> Game -> [Player]
-generatePlayers num bal game = 
-  map (createPlayer) [1..num]
+generatePlayers :: [Luck] -> Balance -> Game -> [Player]
+generatePlayers ls bal game = 
+  map (\luck -> newPlayer bal luck game) ls
+
+{--
+  Generate players for game.
+  Input is required number of players to be generated and seed
+--}
+generateNPlayers :: Int -> GenSeed -> Balance -> Game -> [Player]
+generateNPlayers n seed bal game = 
+  map (createPlayer) [seed+1 .. seed+n]
   where
     createPlayer luckyNum = 
       newPlayer bal (makeGenerator luckyNum) game
@@ -102,15 +111,15 @@ strategyExample p
         lstpayout = payout lstgame
         dblbet = 2 * (betsCost . bets $ lstgame)
 
-
 {--
     Example of running simulation
 --}
 simulationExample :: [Player]
 simulationExample =
-    let b  = 5000
-        c  = 100
-        g  = Game { minBet = 10, maxBet = 2000, wheelStyle = SingleZero, maxGames = c }
-        ps = generatePlayers 100 b g
+    let bal   = 5000
+        num   = 100
+        game  = Game { minBet = 10, maxBet = 2000, wheelStyle = SingleZero, maxGames = 100 }
+        seed  = 123
+        ps = generateNPlayers num seed bal game
     in
         runSimulations strategyExample ps
