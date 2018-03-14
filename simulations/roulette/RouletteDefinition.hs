@@ -8,6 +8,7 @@ module RouletteDefinition (
     Pocket,
     Player(..),
     PlayedGame(..),
+    GenSeed, Luck,
     makeGenerator, newGenerator, winningNumbers,
     initBets, addBet, betsCost, gamePayout,
     newPlayer
@@ -147,7 +148,9 @@ winningNumbers ws gen =
         pctCount = length $ pocketSeq ws
         getPocketByIdx = \x -> pocketByIdx ws (x - 1)
 
-makeGenerator :: Int -> Luck
+type GenSeed = Int
+
+makeGenerator :: GenSeed -> Luck
 makeGenerator = R.mkStdGen
 
 newGenerator  :: IO Luck
