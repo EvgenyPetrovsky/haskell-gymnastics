@@ -1,7 +1,11 @@
 -- https://www.codewars.com/kata/5922543bf9c15705d0000020/train/haskell
 
 module ISO where
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 5763d9c1389377b383a7ff51c0f3add6748f57c2
 import Data.Void
 -- A type of `Void` have no value.
 -- So it is impossible to construct `Void`,
@@ -45,6 +49,7 @@ symm iso = (substR iso, substL iso)
 
 -- isomorphism is transitive
 trans :: ISO a b -> ISO b c -> ISO a c
+<<<<<<< HEAD
 trans (ab, ba) (bc, cb) = 
   (\a -> bc . ab, \c -> ba . cb)
 
@@ -64,12 +69,37 @@ isoMaybe (ab, ba) =
 isoEither :: ISO a b -> ISO c d -> ISO (Either a c) (Either b d)
 isoEither (ab, ba) (cd, dc) =
   ( \(a, c) -> Either (ab a) (cd c), \(b, d) -> Either (ba b) (dc d) )
+=======
+trans (ab, ba) (bc, cb) =
+  (\a -> bc . ab $ a, \c -> ba . cb $ c)
+
+-- We can combine isomorphism:
+isoTuple :: ISO a b -> ISO c d -> ISO (a, c) (b, d)
+isoTuple (ab, ba) (cd, dc) =
+  (\(a, c) -> (ab a, cd c), \(b, d) -> (ba b, dc d))
+
+isoList :: ISO a b -> ISO [a] [b]
+isoList (ab, ba) = (fmap ab, fmap ba)
+
+isoMaybe :: ISO a b -> ISO (Maybe a) (Maybe b)
+isoMaybe (ab, ba) = (fmap ab, fmap ba)
+
+isoEither :: ISO a b -> ISO c d -> ISO (Either a c) (Either b d)
+isoEither (ab, ba) (cd, dc) =
+  if True then (Left ab, Left ba)
+  else (Right cd, Right ca)
+>>>>>>> 5763d9c1389377b383a7ff51c0f3add6748f57c2
 
 isoFunc :: ISO a b -> ISO c d -> ISO (a -> c) (b -> d)
 isoFunc = error "do isoFunc"
 
 -- Going another way is hard (and is generally impossible)
 isoUnMaybe :: ISO (Maybe a) (Maybe b) -> ISO a b
+<<<<<<< HEAD
+=======
+isoUnMaybe = error "do isoUnMaybe"
+
+>>>>>>> 5763d9c1389377b383a7ff51c0f3add6748f57c2
 -- Remember, for all valid ISO, converting and converting back
 -- Is the same as the original value.
 -- You need this to prove some case are impossible.
@@ -87,4 +117,8 @@ isoEU = error "do isoEU"
 
 -- And we have isomorphism on isomorphism!
 isoSymm :: ISO (ISO a b) (ISO b a)
+<<<<<<< HEAD
 isoSymm = error "do isoSymm"
+=======
+isoSymm = error "do isoSymm"
+>>>>>>> 5763d9c1389377b383a7ff51c0f3add6748f57c2
