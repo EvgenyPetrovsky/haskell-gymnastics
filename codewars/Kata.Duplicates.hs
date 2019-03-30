@@ -1,4 +1,4 @@
-module Codwars.Kata.Duplicates where
+module Codewars.Kata.Duplicates where
 
 import Data.Char
 import Data.List
